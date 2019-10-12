@@ -61,7 +61,7 @@ public class Main  {
 	 
 	private static String[] readFileAsString(String fileName) throws IOException{
 		
-		return new String(Files.readAllBytes(Paths.get(fileName))).split("\r\n");
+		return new String(Files.readAllBytes(Paths.get(fileName))).split("\n");
 		
     }
 
