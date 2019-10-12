@@ -1,20 +1,17 @@
 package search;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
-public class Main {
 
-	public static void main(String[] args) {
+public class Main  {
+
+	public static void main(String[] args) throws IOException {
 		Scanner sc = new Scanner(System.in);
 		
-		System.out.println("Enter a number of people:");
-		int n =sc.nextInt();
-		sc.nextLine(); // omit \n after integer
-		String[] lines = new String[n];
-		System.out.println("Enter all lines with people:");
-		for (int i = 0; i < n; i++) {
-			lines[i] = sc.nextLine();
-		}
+		String[] lines = readFileAsString("names.txt");
 		
 		while(true) {
 			System.out.println("\r\n=== Menu ===\r\n" + 
@@ -61,5 +58,11 @@ public class Main {
 		return sb.toString();
 		
 	}
+	 
+	private static String[] readFileAsString(String fileName) throws IOException{
+		
+		return new String(Files.readAllBytes(Paths.get(fileName))).split("\r\n");
+		
+    }
 
 }
