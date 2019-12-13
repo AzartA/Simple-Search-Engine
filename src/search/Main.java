@@ -11,9 +11,9 @@ import java.util.HashSet;
 
 
 public class Main  {
-
+	static Searcher option;
+	
 	/**
-	 * @param args
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
@@ -33,11 +33,25 @@ public class Main  {
 				System.out.println("Bye!");
 				return;
 			case 1:
-					
+				System.out.println("Select a matching option: ALL, ANY, NONE");
+				String opts = sc.nextLine();
+				switch (opts) {
+				case "ALL":
+					setOption(new AllOption());
+					break;
+				case "NONE":
+					setOption(new NoneOption());
+					break;
+				case "ANY":
+					setOption(new AnyOption());
+					break;
+				default:
+					System.out.println("No such option!");
+					break;
+				}
 				System.out.println("Enter a name or email to search all suitable people:");
 				
 				System.out.println(match(sc.nextLine(), lines));
-				//System.out.println("Found people: \n" + search(sc.nextLine(),lines));
 				break;
 			case 2:
 				System.out.println("=== List of people ===");
@@ -52,58 +66,17 @@ public class Main  {
 		}
 		
 	}
-	private static String match(String match, String[] sourse) {
-		if("".equals(match)) return "Empty line!";
-		Map <String, Set<Integer>> words = new HashMap<>();
-		for(int i = 0; i<sourse.length;i++) {
-			for (String l:sourse[i].split("\\s")) {
-				int i1 = i;
-				words.compute(l.toLowerCase(), (k,v) -> {
-					if(v==null) {
-						Set<Integer> set1 = new HashSet<Integer>(5);
-						set1.add(i1); 
-						return set1;
-					}else {
-						v.add(i1);
-						return v;
-					}
-				});
-			}
-		}
-		//words.forEach((k,v) -> System.out.println(k + " -> " + v.toString()));
-		
-		Set<Integer> lnum = words.get(match.toLowerCase());
-		if(lnum == null) return "No matching people found.\n";
-		StringBuilder sb = new StringBuilder();
-		sb.append(lnum.size());
-		sb.append(" persons found:");
-		sb.append(System.lineSeparator());
-		for(Integer l: lnum) {
-			sb.append(sourse[l]);
-			sb.append(System.lineSeparator());
-		}
-		return sb.toString();
+	
+	private static void setOption(Searcher opt) {
+		option = opt;
 	}
-	private static String search(String match, String[] source) {
-		match = match.strip();
-		if(match.split(" ").length>1) {
-			return "";
-		}
-		StringBuilder sb = new StringBuilder();
-		for (String src : source) {
-			if((src.toLowerCase()).contains(match.toLowerCase())) {
-				sb.append(src);
-				sb.append("\n");
-			}
-		}
-		return sb.toString();
-		
+	
+	private static String match(String match, String[] sourse) {
+		return option.search(match, sourse);
 	}
 	 
 	private static String[] readFileAsString(String fileName) throws IOException{
-		
 		return new String(Files.readAllBytes(Paths.get(fileName))).split("\\R");
-		
-    }
+	}
 
 }
